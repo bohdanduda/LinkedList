@@ -29,22 +29,23 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public void dalsi() throws KolekceException {
-        ValidaceSeznamu.zvalidujExistenciDalsihoPrvku(this.jeDalsi());
+        ValidaceSeznamu.zvalidujExistenciDalsihoPrvku(this.jeNastavenAktualniPrvekAMaNaslednika());
 
         this.aktualniPrvek = this.aktualniPrvek.dalsiPrvek;
     }
 
     @Override
     public boolean jeDalsi() {
-        return this.aktualniPrvek == null || this.aktualniPrvek.dalsiPrvek != null;
+        return this.aktualniPrvek.dalsiPrvek != null;
     }
 
     @Override
     public void vlozPrvni(E data) {
         Prvek<E> novyPrvek = new Prvek<>(data);
+        Prvek<E> tempPrvek = this.prvniPrvek;
 
-        novyPrvek.dalsiPrvek = this.prvniPrvek;
         this.prvniPrvek = novyPrvek;
+        novyPrvek.dalsiPrvek = tempPrvek;
 
         velikost++;
     }
@@ -195,9 +196,22 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public void zrus() {
-        prvniPrvek = null;
-        aktualniPrvek = null;
-        velikost = 0;
+        try {
+            if (this.aktualniPrvek != null) {
+                this.odeberAktualni();
+            }
+
+            while (this.prvniPrvek.dalsiPrvek != null) {
+                this.odeberPrvni();
+            }
+
+            if (this.velikost != 0) {
+                this.odeberPosledni();
+            }
+
+        } catch (KolekceException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -243,5 +257,17 @@ public class SpojovySeznam<E> implements Seznam<E> {
             iteratorCurrent = iteratorCurrent.dalsiPrvek;
             return data;
         }
+    }
+
+    private boolean jeNastavenAktualniPrvekAMaNaslednika() {
+        if (this.aktualniPrvek == null) {
+            return false;
+        }
+
+        if (this.aktualniPrvek.dalsiPrvek == null) {
+            return false;
+        }
+
+        return true;
     }
 }

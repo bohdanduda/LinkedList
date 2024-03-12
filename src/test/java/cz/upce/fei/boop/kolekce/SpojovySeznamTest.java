@@ -1,14 +1,10 @@
 package cz.upce.fei.boop.kolekce;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+
 import static org.junit.Assert.*;
 
 /**
- *
  * @author karel@simerda.cz
  */
 public class SpojovySeznamTest {
@@ -30,6 +26,7 @@ public class SpojovySeznamTest {
         }
 
     }
+
     /***
      * Sada instancí testovací třídy pro ověření implementace třídy SpojovySeznam
      */
@@ -42,7 +39,7 @@ public class SpojovySeznamTest {
     private final TestClass T7 = new TestClass(7);
     private final TestClass T8 = new TestClass(8);
     private final TestClass T9 = new TestClass(9);
-  
+
 
     public SpojovySeznamTest() {
     }
@@ -65,40 +62,284 @@ public class SpojovySeznamTest {
 
 // TODO Každou veřejnou metodu třídy SpojovySeznam ověřte alespoň jedním testem  
 // TODO Dosáhněte 100% pokrytí třídy SpojovySeznam tímto testem    
-    
-// Ukázka jednoduchého testu    
-//    @Test
-//    public void test_01_01_VlozPrvni() {
-//        try {
-//            LinkSeznam<TestClass> instance = new LinkSeznam<>();
-//            instance.vlozPrvni(T1);
-//            TestClass[] expected = T1;
-//            TestClass[] result = instance.dejPrvni();//            
-//            assertEquals(expected, result);
-//        } catch (Exception ex) {
-//            fail();
-//        }
-//    }
-// Ukázka testu s vícenásobnou kontrolou stavu testované instance
-//    @Test
-//    public void test_01_02_VlozPrvni() {
-//        try {
-//            LinkSeznam<TestClass> instance = new LinkSeznam<>();
-//            instance.vlozPrvni(T1);
-//            instance.vlozPrvni(T2);
-//            TestClass[] result = {instance.dejPrvni(), instance.dejPosledni()};
-//            TestClass[] expected = {T2, T1};
-//            assertArrayEquals(expected, result);
-//        } catch (Exception ex) {
-//            fail();
-//        }
-//    }
-//
-//  Ukázka testu s vyvoláním výjimky   
-//    @Test(expected = NullPointerException.class)
-//    public void test_01_04_VlozPrvni() throws KolekceException {
-//        LinkSeznam<TestClass> instance = new LinkSeznam<>();
-//        instance.vlozPrvni(null);
-//        fail();
-//    }
+
+    @Test
+    public void test_01_VlozPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+
+            assertEquals(1, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_02_VlozPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T2);
+            seznam.vlozPrvni(T3);
+
+            assertEquals(3, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_VlozPosledni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPosledni(T1);
+
+            assertEquals(1, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_02_VlozPosledni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPosledni(T1);
+            seznam.vlozPosledni(T2);
+            seznam.vlozPosledni(T3);
+
+            assertEquals(3, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_NastavPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_NastavPosledni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+
+            seznam.nastavPosledni();
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_Dalsi() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T2);
+
+            seznam.nastavPrvni();
+            seznam.dalsi();
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_JeDalsi() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T2);
+
+            seznam.nastavPrvni();
+            assertTrue(seznam.jeDalsi());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_VlozZaAktualni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+            seznam.vlozZaAktualni(T2);
+
+            assertEquals(2, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_JePrazdny() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+
+            assertTrue(seznam.jePrazdny());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_DejPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+
+            assertEquals(T1, seznam.dejPrvni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_02_DejPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T2);
+
+
+            assertEquals(T2, seznam.dejPrvni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_DejPosledni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPosledni(T2);
+
+
+            assertEquals(T2, seznam.dejPosledni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_DejAktualni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+
+            assertEquals(T1, seznam.dejAktualni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_DejZaAktualnim() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+            seznam.vlozPosledni(T2);
+
+            assertEquals(T2, seznam.dejZaAktualnim());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_OdeberPrvni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPosledni(T2);
+
+            assertEquals(T1, seznam.odeberPrvni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_OdeberPosledni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPosledni(T2);
+
+            assertEquals(T2, seznam.odeberPosledni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_OdeberAktualni() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+            seznam.vlozPosledni(T2);
+
+            assertEquals(T1, seznam.odeberAktualni());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_OdeberZaAktualnim() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.nastavPrvni();
+            seznam.vlozPosledni(T2);
+
+            assertEquals(T2, seznam.odeberZaAktualnim());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    public void test_01_Size() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPosledni(T2);
+
+            assertEquals(2, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test()
+    public void test_01_Zrus() {
+        try {
+            SpojovySeznam seznam = new SpojovySeznam();
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T1);
+            seznam.vlozPrvni(T1);
+            seznam.nastavPosledni();
+
+            seznam.zrus();
+            assertEquals(0, seznam.size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
 }

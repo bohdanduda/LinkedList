@@ -5,7 +5,7 @@ public abstract class ValidaceSeznamu {
     private static final String NEXT_NODE_DOESNT_EXIST_MESSAGE = "Další prvek neexistuje!";
 
     public static void zvalidujDelku(boolean jeSeznamPrazdny) throws KolekceException {
-        if (!jeSeznamPrazdny){
+        if (jeSeznamPrazdny){
             throw new KolekceException(NEGATIVE_COLLECTION_SIZE_MESSAGE);
         }
     }
