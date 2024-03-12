@@ -6,7 +6,8 @@ package cz.upce.fei.boop.kolekce;
  */
 public class KolekceException extends Exception {
 
-    public KolekceException() {
+    public KolekceException(String message) {
+
     }
 
 }
