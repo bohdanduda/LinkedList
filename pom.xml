@@ -54,5 +54,5 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-    <name>SpojovySeznamPrijmeni</name>
+    <name>SpojovySeznamDuda</name>
 </project>
