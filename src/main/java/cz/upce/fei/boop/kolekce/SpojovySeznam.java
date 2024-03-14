@@ -6,7 +6,18 @@ import java.util.NoSuchElementException;
 public class SpojovySeznam<E> implements Seznam<E> {
     private Prvek<E> prvniPrvek;
     private Prvek<E> aktualniPrvek;
+    private Prvek<E> posledniPrvek;
     private int velikost;
+
+    private static class Prvek<E> {
+        public E data;
+        public Prvek<E> dalsiPrvek;
+
+        public Prvek(E data) {
+            this.data = data;
+            this.dalsiPrvek = null;
+        }
+    }
 
     @Override
     public void nastavPrvni() throws KolekceException {
@@ -57,16 +68,22 @@ public class SpojovySeznam<E> implements Seznam<E> {
         if (this.jeSeznamPrazdny()) {
             this.prvniPrvek = novyPrvek;
             velikost++;
-        } else {
-            Prvek<E> dosavadniPosledniPrvek = this.prvniPrvek;
 
-            while (dosavadniPosledniPrvek.dalsiPrvek != null) {
-                dosavadniPosledniPrvek = dosavadniPosledniPrvek.dalsiPrvek;
-            }
-
-            dosavadniPosledniPrvek.dalsiPrvek = novyPrvek;
-            velikost++;
+            return;
         }
+
+        if (this.posledniPrvek.dalsiPrvek == null) {
+            this.posledniPrvek.dalsiPrvek = novyPrvek;
+
+            return;
+        }
+
+        while (posledniPrvek.dalsiPrvek != null) {
+            posledniPrvek = posledniPrvek.dalsiPrvek;
+        }
+
+        posledniPrvek.dalsiPrvek = novyPrvek;
+        velikost++;
     }
 
     @Override
