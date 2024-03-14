@@ -9,6 +9,12 @@ public class SpojovySeznam<E> implements Seznam<E> {
     private Prvek<E> posledniPrvek;
     private int velikost;
 
+    private static final String SEZNAM_JE_PRAZDNY_ERROR_MSG = "Seznam je prázdný!";
+    private static final String DALSI_PRVEK_NEEXISTUJE_ERROR_MSG = "Další prvek neexistuje!";
+    private static final String PRVEK_MA_HODNOTU_NULL_ERROR_MSG = "Prvek nesmí mít hodnotu null!";
+    private static final String AKTUALNI_PRVEK_MA_HODNOTU_NULL_ERROR_MSG = "Aktuální prvek nesmí mít hodnotu null!";
+
+
     private static class Prvek<E> {
         public E data;
         public Prvek<E> dalsiPrvek;
@@ -21,42 +27,43 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public void nastavPrvni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
 
         this.aktualniPrvek = this.prvniPrvek;
     }
 
     @Override
     public void nastavPosledni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
 
-        Prvek<E> posledniPrvek = this.prvniPrvek;
-        while (posledniPrvek.dalsiPrvek != null) {
-            posledniPrvek = posledniPrvek.dalsiPrvek;
-        }
-
-        this.aktualniPrvek = posledniPrvek;
+        this.nastavHodnotuPoslednimuPrvku();
+        this.aktualniPrvek = this.posledniPrvek;
     }
 
     @Override
     public void dalsi() throws KolekceException {
-        ValidaceSeznamu.zvalidujExistenciDalsihoPrvku(this.jeNastavenAktualniPrvekAMaNaslednika());
+        this.zvalidujHodnotuAktualnihoPrvku();
+        this.zvalidujExistenciDalsihoPrvku();
 
         this.aktualniPrvek = this.aktualniPrvek.dalsiPrvek;
     }
 
     @Override
-    public boolean jeDalsi() {
+    public boolean jeDalsi() throws KolekceException {
+        this.zvalidujHodnotuAktualnihoPrvku();
+
         return this.aktualniPrvek.dalsiPrvek != null;
     }
 
     @Override
     public void vlozPrvni(E data) {
         Prvek<E> novyPrvek = new Prvek<>(data);
-        Prvek<E> tempPrvek = this.prvniPrvek;
+        this.zvalidujHodnotuPrvku(novyPrvek);
+
+        Prvek<E> docasnyPrvek = this.prvniPrvek;
 
         this.prvniPrvek = novyPrvek;
-        novyPrvek.dalsiPrvek = tempPrvek;
+        novyPrvek.dalsiPrvek = docasnyPrvek;
 
         velikost++;
     }
@@ -64,6 +71,7 @@ public class SpojovySeznam<E> implements Seznam<E> {
     @Override
     public void vlozPosledni(E data) {
         Prvek<E> novyPrvek = new Prvek<>(data);
+        this.zvalidujHodnotuPrvku(novyPrvek);
 
         if (this.jeSeznamPrazdny()) {
             this.prvniPrvek = novyPrvek;
@@ -72,25 +80,21 @@ public class SpojovySeznam<E> implements Seznam<E> {
             return;
         }
 
-        if (this.posledniPrvek.dalsiPrvek == null) {
-            this.posledniPrvek.dalsiPrvek = novyPrvek;
+        this.nastavHodnotuPoslednimuPrvku();
 
-            return;
-        }
-
-        while (posledniPrvek.dalsiPrvek != null) {
-            posledniPrvek = posledniPrvek.dalsiPrvek;
-        }
-
-        posledniPrvek.dalsiPrvek = novyPrvek;
+        this.posledniPrvek.dalsiPrvek = novyPrvek;
         velikost++;
+
+        this.posledniPrvek = this.posledniPrvek.dalsiPrvek;
     }
 
     @Override
     public void vlozZaAktualni(E data) throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.zvalidujHodnotuAktualnihoPrvku();
 
         Prvek<E> novyPrvek = new Prvek<>(data);
+        this.zvalidujHodnotuPrvku(novyPrvek);
 
         novyPrvek.dalsiPrvek = aktualniPrvek.dalsiPrvek;
         aktualniPrvek.dalsiPrvek = novyPrvek;
@@ -105,79 +109,71 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public E dejPrvni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
 
         return prvniPrvek.data;
     }
 
     @Override
     public E dejPosledni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
 
-        Prvek<E> posledni = this.prvniPrvek;
-        while (posledni.dalsiPrvek != null) {
-            posledni = posledni.dalsiPrvek;
-        }
+        this.nastavHodnotuPoslednimuPrvku();
 
-        return posledni.data;
+        return this.posledniPrvek.data;
     }
 
     @Override
     public E dejAktualni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.zvalidujHodnotuAktualnihoPrvku();
 
         return aktualniPrvek.data;
     }
 
     @Override
     public E dejZaAktualnim() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
-        ValidaceSeznamu.zvalidujExistenciDalsihoPrvku(this.jeDalsi());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.zvalidujHodnotuAktualnihoPrvku();
+
+        this.zvalidujExistenciDalsihoPrvku();
 
         return aktualniPrvek.dalsiPrvek.data;
     }
 
     @Override
     public E odeberPrvni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
 
         E odebranyPrvek = prvniPrvek.data;
         prvniPrvek = prvniPrvek.dalsiPrvek;
         velikost--;
+
         return odebranyPrvek;
     }
 
     @Override
     public E odeberPosledni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.nastavHodnotuPoslednimuPrvku();
 
-        Prvek<E> aktualniPrvek = this.prvniPrvek;
-        Prvek<E> prvekPredAktualnim = null;
+        Prvek<E> odebranyPrvek = this.posledniPrvek;
 
-        while (aktualniPrvek.dalsiPrvek != null) {
-            prvekPredAktualnim = aktualniPrvek;
-            aktualniPrvek = aktualniPrvek.dalsiPrvek;
-        }
-
-        E odebranyPrvek = aktualniPrvek.data;
-
-        if (prvekPredAktualnim == null) {
-            this.prvniPrvek = null;
+        if (this.posledniPrvek == this.aktualniPrvek) {
             this.aktualniPrvek = null;
-        } else {
-            prvekPredAktualnim.dalsiPrvek = null;
-            this.aktualniPrvek = prvekPredAktualnim;
         }
 
-        this.velikost--;
-        return odebranyPrvek;
+        this.posledniPrvek = null;
+
+        return odebranyPrvek.data;
     }
 
     @Override
     public E odeberAktualni() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.zvalidujHodnotuAktualnihoPrvku();
 
-        E odebranyPrvek = this.aktualniPrvek.data;
+        Prvek<E> odebranyPrvek = this.aktualniPrvek;
 
         if (this.aktualniPrvek == this.prvniPrvek) {
             this.prvniPrvek = this.prvniPrvek.dalsiPrvek;
@@ -190,13 +186,14 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
         this.velikost--;
 
-        return odebranyPrvek;
+        return odebranyPrvek.data;
     }
 
     @Override
     public E odeberZaAktualnim() throws KolekceException {
-        ValidaceSeznamu.zvalidujDelku(this.jePrazdny());
-        ValidaceSeznamu.zvalidujExistenciDalsihoPrvku(this.jeDalsi());
+        this.zvalidujZdaNeniSeznamPrazdny();
+        this.zvalidujHodnotuAktualnihoPrvku();
+        this.zvalidujExistenciDalsihoPrvku();
 
         E odebranyPrvek = aktualniPrvek.dalsiPrvek.data;
 
@@ -240,11 +237,11 @@ public class SpojovySeznam<E> implements Seznam<E> {
         return velikost == 0;
     }
 
-    private Prvek<E> najdiPredchoziPrvek(Prvek<E> target) {
+    private Prvek<E> najdiPredchoziPrvek(Prvek<E> hledanyPrvek) {
         Prvek<E> aktualniPrvek = this.prvniPrvek;
         Prvek<E> predchoziPrvek = null;
 
-        while (aktualniPrvek != null && aktualniPrvek != target) {
+        while (aktualniPrvek != null && aktualniPrvek != hledanyPrvek) {
             predchoziPrvek = aktualniPrvek;
             aktualniPrvek = aktualniPrvek.dalsiPrvek;
         }
@@ -276,15 +273,47 @@ public class SpojovySeznam<E> implements Seznam<E> {
         }
     }
 
-    private boolean jeNastavenAktualniPrvekAMaNaslednika() {
+    private void zvalidujZdaNeniSeznamPrazdny() throws KolekceException {
+        if (this.jeSeznamPrazdny()) {
+            throw new KolekceException(SEZNAM_JE_PRAZDNY_ERROR_MSG);
+        }
+    }
+
+    private void zvalidujExistenciDalsihoPrvku() throws KolekceException {
+        if (!this.jeDalsi()) {
+            throw new KolekceException(DALSI_PRVEK_NEEXISTUJE_ERROR_MSG);
+        }
+    }
+
+    private void zvalidujHodnotuPrvku(Prvek<E> prvek) throws NullPointerException {
+        if (prvek == null) {
+            throw new NullPointerException(PRVEK_MA_HODNOTU_NULL_ERROR_MSG);
+        }
+    }
+
+    private void zvalidujHodnotuAktualnihoPrvku() throws KolekceException {
         if (this.aktualniPrvek == null) {
-            return false;
+            throw new KolekceException(AKTUALNI_PRVEK_MA_HODNOTU_NULL_ERROR_MSG);
+        }
+    }
+
+    private void nastavHodnotuPoslednimuPrvku() {
+        if (posledniPrvek.dalsiPrvek == null) {
+            return;
         }
 
-        if (this.aktualniPrvek.dalsiPrvek == null) {
-            return false;
+        if (this.posledniPrvek == null) {
+            this.posledniPrvek = prvniPrvek;
+
+            while (this.posledniPrvek.dalsiPrvek != null) {
+                this.posledniPrvek = this.posledniPrvek.dalsiPrvek;
+            }
         }
 
-        return true;
+        if (this.posledniPrvek.dalsiPrvek != null) {
+            while (this.posledniPrvek.dalsiPrvek != null) {
+                this.posledniPrvek = this.posledniPrvek.dalsiPrvek;
+            }
+        }
     }
 }

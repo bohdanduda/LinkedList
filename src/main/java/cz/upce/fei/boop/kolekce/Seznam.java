@@ -120,7 +120,7 @@ public interface Seznam<E> extends Iterable<E> {
      * @return Vrací hodnotu true, když aktuální prvke má následníka. V případě,
      * že ukazatel se přesunul na poslední prvek seznamu vrací se false.
      */
-    boolean jeDalsi();
+    boolean jeDalsi() throws KolekceException;
 
     /**
      * Vkládací metoda vlozPrvni() vloží data s datovou entitou jako první.

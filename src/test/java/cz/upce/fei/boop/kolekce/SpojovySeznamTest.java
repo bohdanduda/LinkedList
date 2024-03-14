@@ -224,7 +224,6 @@ public class SpojovySeznamTest {
             seznam.vlozPrvni(T1);
             seznam.vlozPosledni(T2);
 
-
             assertEquals(T2, seznam.dejPosledni());
         } catch (Exception ex) {
             fail();
