@@ -329,16 +329,17 @@ public class SpojovySeznamTest {
         try {
             SpojovySeznam seznam = new SpojovySeznam();
             seznam.vlozPrvni(T1);
-            seznam.vlozPrvni(T1);
-            seznam.vlozPrvni(T1);
-            seznam.vlozPrvni(T1);
-            seznam.vlozPrvni(T1);
-            seznam.nastavPosledni();
+            seznam.vlozPrvni(T2);
+            seznam.vlozPrvni(T3);
+            seznam.vlozPrvni(T4);
+            seznam.vlozPrvni(T5);
+
+
 
             seznam.zrus();
             assertEquals(0, seznam.size());
         } catch (Exception ex) {
-            fail();
+            fail(ex.getMessage());
         }
     }
 }
