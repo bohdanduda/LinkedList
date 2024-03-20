@@ -60,8 +60,8 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public void vlozPrvni(E data) {
+        this.zvalidujHodnotuVkladanychDat(data);
         Prvek<E> novyPrvek = new Prvek<>(data);
-        this.zvalidujHodnotuPrvku(novyPrvek);
 
         Prvek<E> docasnyPrvek = this.prvniPrvek;
 
@@ -73,8 +73,8 @@ public class SpojovySeznam<E> implements Seznam<E> {
 
     @Override
     public void vlozPosledni(E data) {
+        this.zvalidujHodnotuVkladanychDat(data);
         Prvek<E> novyPrvek = new Prvek<>(data);
-        this.zvalidujHodnotuPrvku(novyPrvek);
 
         if (this.jeSeznamPrazdny()) {
             this.prvniPrvek = novyPrvek;
@@ -96,8 +96,8 @@ public class SpojovySeznam<E> implements Seznam<E> {
         this.zvalidujZdaNeniSeznamPrazdny();
         this.zvalidujHodnotuAktualnihoPrvku();
 
+        this.zvalidujHodnotuVkladanychDat(data);
         Prvek<E> novyPrvek = new Prvek<>(data);
-        this.zvalidujHodnotuPrvku(novyPrvek);
 
         novyPrvek.dalsiPrvek = aktualniPrvek.dalsiPrvek;
         this.aktualniPrvek.dalsiPrvek = novyPrvek;
@@ -298,8 +298,8 @@ public class SpojovySeznam<E> implements Seznam<E> {
         }
     }
 
-    private void zvalidujHodnotuPrvku(Prvek<E> prvek) throws NullPointerException {
-        if (prvek == null) {
+    private void zvalidujHodnotuVkladanychDat(E data) throws NullPointerException {
+        if (data == null) {
             throw new NullPointerException(PRVEK_MA_HODNOTU_NULL_ERROR_MSG);
         }
     }
