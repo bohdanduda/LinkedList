@@ -187,6 +187,7 @@ public class SpojovySeznam<E> implements Seznam<E> {
             this.aktualniPrvek = prvekPredAktualnim;
         }
 
+        this.aktualniPrvek = null;
         this.velikost--;
 
         return odebranyPrvek.data;
